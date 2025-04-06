@@ -1,6 +1,6 @@
 
 <?php
-require_once __DIR__ . '/../core/BaseDao.php';
+require_once __DIR__ . '/../dao/BaseDao.php';
 
 class UserDao extends BaseDao {
     public function __construct() {
