@@ -2,6 +2,7 @@
 <?php
 require_once __DIR__ . '/../dao/db.php';
 
+
 class BaseDao {
     protected $conn;
     protected $table;
