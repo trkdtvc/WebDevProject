@@ -8,7 +8,7 @@ class BaseDao {
     protected $table;
 
     public function __construct($table) {
-        $this->conn = DB::getConnection();
+        $this->conn = DB::connect();
         $this->table = $table;
     }
 
