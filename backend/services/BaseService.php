@@ -1,4 +1,6 @@
+
 <?php
+
 class BaseService {
     protected $dao;
 
@@ -18,11 +20,11 @@ class BaseService {
         return $this->dao->add($entity);
     }
 
-    public function update($id, $entity) {
-        return $this->dao->update($id, $entity);
+    public function update($entity, $id) {
+        $this->dao->update($entity, $id);
     }
 
     public function delete($id) {
-        return $this->dao->delete($id);
+        $this->dao->delete($id);
     }
 }

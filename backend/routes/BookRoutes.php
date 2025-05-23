@@ -1,64 +1,107 @@
+
 <?php
-require_once __DIR__ . '/../services/BookService.php';
 
 /**
- * @OA\Get(
- *     path="/book",
- *     summary="Get all book",
- *     @OA\Response(response=200, description="List of book")
+ * @OA\Tag(
+ *   name="Books",
+ *   description="Book management endpoints"
  * )
  */
-Flight::route('GET /book', function() {
+class BookRoutesDocs {
+
+    /**
+     * @OA\Get(
+     *     path="/books",
+     *     summary="Get all books",
+     *     tags={"Books"},
+     *     @OA\Response(response=200, description="List of books")
+     * )
+     */
+    public function getBooksDoc() {}
+
+    /**
+     * @OA\Get(
+     *     path="/books/{id}",
+     *     summary="Get book by ID",
+     *     tags={"Books"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Book data")
+     * )
+     */
+    public function getBookByIdDoc() {}
+
+    /**
+     * @OA\Post(
+     *     path="/books",
+     *     summary="Add new book",
+     *     tags={"Books"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "author", "category_id"},
+     *             @OA\Property(property="title", type="string", example="The Alchemist"),
+     *             @OA\Property(property="author", type="string", example="Paulo Coelho"),
+     *             @OA\Property(property="category_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Book created")
+     * )
+     */
+    public function addBookDoc() {}
+
+    /**
+     * @OA\Put(
+     *     path="/books/{id}",
+     *     summary="Update book by ID",
+     *     tags={"Books"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "author", "category_id"},
+     *             @OA\Property(property="title", type="string", example="Updated Title"),
+     *             @OA\Property(property="author", type="string", example="Updated Author"),
+     *             @OA\Property(property="category_id", type="integer", example=2)
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Book updated")
+     * )
+     */
+    public function updateBookDoc() {}
+
+    /**
+     * @OA\Delete(
+     *     path="/books/{id}",
+     *     summary="Delete book by ID",
+     *     tags={"Books"},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Book deleted")
+     * )
+     */
+    public function deleteBookDoc() {}
+}
+
+// Actual route logic
+Flight::route('GET /books', function () {
     Flight::json(Flight::get('book_service')->get_all());
 });
 
-/**
- * @OA\Get(
- *     path="/book/{{id}}",
- *     summary="Get book by ID",
- *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="integer")),
- *     @OA\Response(response=200, description="Book data")
- * )
- */
-Flight::route('GET /book/@id', function($id) {
+Flight::route('GET /books/@id', function($id) {
     Flight::json(Flight::get('book_service')->get_by_id($id));
 });
 
-/**
- * @OA\Post(
- *     path="/book",
- *     summary="Add a new book",
- *     @OA\RequestBody(required=true, @OA\JsonContent()),
- *     @OA\Response(response=200, description="Book added")
- * )
- */
-Flight::route('POST /book', function() {
+Flight::route('POST /books', function() {
     $data = Flight::request()->data->getData();
     Flight::json(Flight::get('book_service')->add($data));
 });
 
-/**
- * @OA\Put(
- *     path="/book/{{id}}",
- *     summary="Update a book",
- *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="integer")),
- *     @OA\RequestBody(required=true, @OA\JsonContent()),
- *     @OA\Response(response=200, description="Book updated")
- * )
- */
-Flight::route('PUT /book/@id', function($id) {
+Flight::route('PUT /books/@id', function($id) {
     $data = Flight::request()->data->getData();
-    Flight::json(Flight::get('book_service')->update($id, $data));
+    Flight::get('book_service')->update($data, $id);
+    Flight::json(["message" => "Book updated"]);
 });
 
-/**
- * @OA\Delete(
- *     path="/book/{{id}}",
- *     summary="Delete a book",
- *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="integer")),
- *     @OA\Response(response=200, description="Book deleted")
- * )
- */
-Flight::route('DELETE /book/@id', function($id) {
-    Flight::json(Flight::get('book_service')->delete($id));
+Flight::route('DELETE /books/@id', function($id) {
+    Flight::get('book_service')->delete($id);
+    Flight::json(["message" => "Book deleted"]);
 });
