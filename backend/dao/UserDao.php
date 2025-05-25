@@ -7,14 +7,14 @@ class UserDao extends BaseDao {
         parent::__construct("users");
     }
 
-    public function get_by_id($id) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE user_id = :id");
+    public function get_by_id($id, $id_column = "user_id") {
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE $id_column = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function delete($id) {
-        $stmt = $this->conn->prepare("DELETE FROM users WHERE user_id = :id");
+    public function delete($id, $id_column = "user_id") {
+        $stmt = $this->conn->prepare("DELETE FROM users WHERE $id_column = :id");
         $stmt->execute(['id' => $id]);
         return ['status' => 'success', 'message' => "User with ID $id deleted."];
     }
@@ -25,16 +25,12 @@ class UserDao extends BaseDao {
     }
 
     public function add($entity): mixed {
-    $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
-    $stmt->execute(['email' => $entity['email']]);
-    $existing = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($existing) {
-        return ['error' => 'Email already exists.'];
+        return parent::add($entity); 
     }
 
-    $newId = parent::add($entity);
-    return $this->get_by_id($newId);
-}
-
+    public function get_by_email($email) {
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

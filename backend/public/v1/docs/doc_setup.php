@@ -2,20 +2,30 @@
 <?php
 
 /**
- * @OA\OpenApi(
- *   @OA\Info(
- *     title="Book Library API",
- *     version="1.0.0",
- *     description="API documentation for the Book Library System",
+ * @OA\Info(
+ *     title="API",
+ *     description="Restaurant API",
+ *     version="1.0",
  *     @OA\Contact(
- *       email="tarik@example.com",
- *       name="Tarik Dautovic"
+ *         email="web2001programming@gmail.com",
+ *         name="Web Programming"
  *     )
- *   ),
- *   @OA\Server(
- *     url="http://localhost:8080/WebDevProject/backend",
- *     description="Local Development Server"
- *   )
  * )
  */
-class DocSetup {}
+
+/**
+ * @OA\Server(
+ *     url="http://localhost:8080/WebDevProject/backend",
+ *     description="Localhost on Apache port 8080"
+ * )
+ */
+
+/**
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+ */
+

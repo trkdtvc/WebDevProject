@@ -7,14 +7,14 @@ class OrderItemDao extends BaseDao {
         parent::__construct("order_items");
     }
 
-    public function get_by_id($id): mixed {
-        $stmt = $this->conn->prepare("SELECT * FROM order_items WHERE order_item_id = :id");
+    public function get_by_id($id, $id_column = "order_item_id"): mixed {
+        $stmt = $this->conn->prepare("SELECT * FROM order_items WHERE $id_column = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function delete($id): array {
-        $stmt = $this->conn->prepare("DELETE FROM order_items WHERE order_item_id = :id");
+    public function delete($id, $id_column = "order_item_id"): array {
+        $stmt = $this->conn->prepare("DELETE FROM order_items WHERE $id_column = :id");
         $stmt->execute(['id' => $id]);
         return ['status' => 'success', 'message' => "Order item with ID $id deleted."];
     }

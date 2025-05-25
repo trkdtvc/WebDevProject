@@ -1,15 +1,16 @@
-
 <?php
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
 use OpenApi\Generator;
 
-header('Content-Type: application/json');
-
 $openapi = Generator::scan([
-    realpath(__DIR__ . '/doc_setup.php'),
-    realpath(__DIR__ . '/../../../routes')
+    __DIR__ . '/doc_setup.php',
+    __DIR__ . '/../../../routes'
 ]);
 
+header('Content-Type: application/json');
 echo $openapi->toJson();

@@ -1,111 +1,123 @@
 
 <?php
+require_once __DIR__ . '/../data/roles.php';
 
 /**
- * @OA\Tag(
- *   name="Users",
- *   description="User management endpoints"
+ * @OA\Get(
+ *     path="/users/{id}",
+ *     tags={"Users"},
+ *     summary="Get user by ID",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="User ID",
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User data"
+ *     )
  * )
  */
-class UserRoutesDocs {
-
-    /**
-     * @OA\Get(
-     *     path="/users",
-     *     summary="Get all users",
-     *     tags={"Users"},
-     *     @OA\Response(response=200, description="List of users")
-     * )
-     */
-    public function getAllUsersDoc() {}
-
-    /**
-     * @OA\Get(
-     *     path="/users/{id}",
-     *     summary="Get user by ID",
-     *     tags={"Users"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="User data")
-     * )
-     */
-    public function getUserByIdDoc() {}
-
-    /**
-     * @OA\Post(
-     *     path="/users",
-     *     summary="Add new user",
-     *     tags={"Users"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"first_name", "last_name", "email", "password", "role"},
-     *             @OA\Property(property="first_name", type="string", example="John"),
-     *             @OA\Property(property="last_name", type="string", example="Doe"),
-     *             @OA\Property(property="email", type="string", example="john.doe@example.com"),
-     *             @OA\Property(property="password", type="string", example="securepassword"),
-     *             @OA\Property(property="role", type="string", example="user")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="User created")
-     * )
-     */
-    public function addUserDoc() {}
-
-    /**
-     * @OA\Put(
-     *     path="/users/{id}",
-     *     summary="Update user by ID",
-     *     tags={"Users"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"first_name", "last_name", "email", "password", "role"},
-     *             @OA\Property(property="first_name", type="string", example="John"),
-     *             @OA\Property(property="last_name", type="string", example="Doe"),
-     *             @OA\Property(property="email", type="string", example="john.doe@example.com"),
-     *             @OA\Property(property="password", type="string", example="updatedpassword"),
-     *             @OA\Property(property="role", type="string", example="admin")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="User updated")
-     * )
-     */
-    public function updateUserDoc() {}
-
-    /**
-     * @OA\Delete(
-     *     path="/users/{id}",
-     *     summary="Delete user by ID",
-     *     tags={"Users"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="User deleted")
-     * )
-     */
-    public function deleteUserDoc() {}
-}
-
-// --- Actual route logic ---
-Flight::route('GET /users', function() {
-    Flight::json(Flight::get('user_service')->get_all());
+Flight::route('GET /users/@id', function($id){
+    Flight::json(Flight::userService()->get_by_id($id));
 });
 
-Flight::route('GET /users/@id', function($id) {
-    Flight::json(Flight::get('user_service')->get_by_id($id));
+/**
+ * @OA\Get(
+ *     path="/users",
+ *     tags={"Users"},
+ *     summary="Get all users",
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of users"
+ *     )
+ * )
+ */
+Flight::route('GET /users', function(){
+    Flight::json(Flight::userService()->get_all());
 });
 
-Flight::route('POST /users', function() {
+/**
+ * @OA\Post(
+ *     path="/users",
+ *     tags={"Users"},
+ *     summary="Add a new user",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"name", "email", "password"},
+ *             @OA\Property(property="name", type="string", example="John Doe"),
+ *             @OA\Property(property="email", type="string", example="john@example.com"),
+ *             @OA\Property(property="password", type="string", example="secret123"),
+ *             @OA\Property(property="role", type="string", example="user")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User created successfully"
+ *     )
+ * )
+ */
+Flight::route('POST /users', function(){
+    AuthMiddleware::authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
-    Flight::json(Flight::get('user_service')->add($data));
+    Flight::json(Flight::userService()->add($data));
 });
 
-Flight::route('PUT /users/@id', function($id) {
+/**
+ * @OA\Put(
+ *     path="/users/{id}",
+ *     tags={"Users"},
+ *     summary="Update a user by ID",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="User ID",
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="name", type="string", example="Updated Name"),
+ *             @OA\Property(property="email", type="string", example="updated@example.com"),
+ *             @OA\Property(property="password", type="string", example="newpassword123"),
+ *             @OA\Property(property="role", type="string", example="admin")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User updated"
+ *     )
+ * )
+ */
+Flight::route('PUT /users/@id', function($id){
+    AuthMiddleware::authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
-    Flight::get('user_service')->update($data, $id);
-    Flight::json(["message" => "User updated"]);
+    Flight::json(Flight::userService()->update($data, $id));
 });
 
-Flight::route('DELETE /users/@id', function($id) {
-    Flight::get('user_service')->delete($id);
-    Flight::json(["message" => "User deleted"]);
+/**
+ * @OA\Delete(
+ *     path="/users/{id}",
+ *     tags={"Users"},
+ *     summary="Delete a user by ID",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="User ID",
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User deleted"
+ *     )
+ * )
+ */
+Flight::route('DELETE /users/@id', function($id){
+    AuthMiddleware::authorizeRole(Roles::ADMIN);
+    Flight::json(Flight::userService()->delete($id));
 });
