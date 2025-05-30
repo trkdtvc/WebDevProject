@@ -1,28 +1,31 @@
 
 <?php
-require_once __DIR__ . '/../dao/BaseDao.php';
+require_once __DIR__ . '/BaseDao.php';
 
 class OrderItemDao extends BaseDao {
     public function __construct() {
         parent::__construct("order_items");
     }
 
-    public function insert($data) {
-        $stmt = $this->conn->prepare("INSERT INTO order_items (order_id, book_id, quantity) VALUES (?, ?, ?)");
-        return $stmt->execute([
-            $data['order_id'],
-            $data['book_id'],
-            $data['quantity']
-        ]);
+    public function get_by_id($id, $id_column = "order_item_id"): mixed {
+        $stmt = $this->conn->prepare("SELECT * FROM order_items WHERE $id_column = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $data) {
-        $stmt = $this->conn->prepare("UPDATE order_items SET order_id = ?, book_id = ?, quantity = ? WHERE id = ?");
-        return $stmt->execute([
-            $data['order_id'],
-            $data['book_id'],
-            $data['quantity'],
-            $id
-        ]);
+    public function delete($id, $id_column = "order_item_id"): array {
+        $stmt = $this->conn->prepare("DELETE FROM order_items WHERE $id_column = :id");
+        $stmt->execute(['id' => $id]);
+        return ['status' => 'success', 'message' => "Order item with ID $id deleted."];
+    }
+
+    public function update($entity, $id, $id_column = 'order_item_id'): mixed {
+        parent::update($entity, $id, $id_column);
+        return $this->get_by_id($id);
+    }
+
+    public function add($entity): mixed {
+        $newId = parent::add($entity);
+        return $this->get_by_id($newId);
     }
 }

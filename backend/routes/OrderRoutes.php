@@ -1,64 +1,125 @@
+
 <?php
-require_once __DIR__ . '/../services/OrderService.php';
+require_once __DIR__ . '/../data/roles.php';
+
+/**
+ * @OA\Tag(
+ *     name="Orders",
+ *     description="Order management endpoints"
+ * )
+ */
 
 /**
  * @OA\Get(
- *     path="/order",
- *     summary="Get all order",
- *     @OA\Response(response=200, description="List of order")
+ *     path="/orders/{id}",
+ *     summary="Get order by ID",
+ *     tags={"Orders"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Order data"
+ *     )
  * )
  */
-Flight::route('GET /order', function() {
-    Flight::json(Flight::get('order_service')->get_all());
+Flight::route('GET /orders/@id', function($id){
+    Flight::json(Flight::orderService()->get_by_id($id));
 });
 
 /**
  * @OA\Get(
- *     path="/order/{{id}}",
- *     summary="Get order by ID",
- *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="integer")),
- *     @OA\Response(response=200, description="Order data")
+ *     path="/orders",
+ *     summary="Get all orders",
+ *     tags={"Orders"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of orders"
+ *     )
  * )
  */
-Flight::route('GET /order/@id', function($id) {
-    Flight::json(Flight::get('order_service')->get_by_id($id));
+Flight::route('GET /orders', function(){
+    Flight::json(Flight::orderService()->get_all());
 });
 
 /**
  * @OA\Post(
- *     path="/order",
- *     summary="Add a new order",
- *     @OA\RequestBody(required=true, @OA\JsonContent()),
- *     @OA\Response(response=200, description="Order added")
+ *     path="/orders",
+ *     summary="Create a new order",
+ *     tags={"Orders"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"user_id", "status", "total_price"},
+ *             @OA\Property(property="user_id", type="integer", example=14),
+ *             @OA\Property(property="status", type="string", example="pending"),
+ *             @OA\Property(property="total_price", type="number", format="float", example=19.99)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Order created"
+ *     )
  * )
  */
-Flight::route('POST /order', function() {
+Flight::route('POST /orders', function(){
+    AuthMiddleware::authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
-    Flight::json(Flight::get('order_service')->add($data));
+    Flight::json(Flight::orderService()->add($data));
 });
 
 /**
  * @OA\Put(
- *     path="/order/{{id}}",
- *     summary="Update a order",
- *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="integer")),
- *     @OA\RequestBody(required=true, @OA\JsonContent()),
- *     @OA\Response(response=200, description="Order updated")
+ *     path="/orders/{id}",
+ *     summary="Update an order by ID",
+ *     tags={"Orders"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="user_id", type="integer", example=14),
+ *             @OA\Property(property="status", type="string", example="shipped"),
+ *             @OA\Property(property="total_price", type="number", format="float", example=25.50)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Order updated"
+ *     )
  * )
  */
-Flight::route('PUT /order/@id', function($id) {
+Flight::route('PUT /orders/@id', function($id){
+    AuthMiddleware::authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
-    Flight::json(Flight::get('order_service')->update($id, $data));
+    Flight::json(Flight::orderService()->update($data, $id));
 });
 
 /**
  * @OA\Delete(
- *     path="/order/{{id}}",
- *     summary="Delete a order",
- *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="integer")),
- *     @OA\Response(response=200, description="Order deleted")
+ *     path="/orders/{id}",
+ *     summary="Delete an order by ID",
+ *     tags={"Orders"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Order deleted"
+ *     )
  * )
  */
-Flight::route('DELETE /order/@id', function($id) {
-    Flight::json(Flight::get('order_service')->delete($id));
+Flight::route('DELETE /orders/@id', function($id){
+    AuthMiddleware::authorizeRole(Roles::ADMIN);
+    Flight::json(Flight::orderService()->delete($id));
 });

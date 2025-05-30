@@ -4,12 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1c78e5617b1d7fdbb3c20ca9dfe097a5
+class ComposerStaticInit8d070178755c320c69f93ee4800660ef
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-        'fc73bab8d04e21bcdda37ca319c63800' => __DIR__ . '/..' . '/mikecao/flight/flight/autoload.php',
+        '4cdafd4a5191caf078235e7dd119fdaf' => __DIR__ . '/..' . '/flightphp/core/flight/autoload.php',
+        '0ccdf99b8f62f02c52cba55802e0c2e7' => __DIR__ . '/..' . '/zircote/swagger-php/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -22,11 +23,21 @@ class ComposerStaticInit1c78e5617b1d7fdbb3c20ca9dfe097a5
         'P' => 
         array (
             'Psr\\Log\\' => 8,
-            'PhpParser\\' => 10,
+            'Psr\\Cache\\' => 10,
         ),
         'O' => 
         array (
             'OpenApi\\' => 8,
+        ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Deprecations\\' => 22,
+            'Doctrine\\Common\\Lexer\\' => 22,
+            'Doctrine\\Common\\Annotations\\' => 28,
         ),
     );
 
@@ -47,13 +58,29 @@ class ComposerStaticInit1c78e5617b1d7fdbb3c20ca9dfe097a5
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
         ),
-        'PhpParser\\' => 
+        'Psr\\Cache\\' => 
         array (
-            0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+            0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
         'OpenApi\\' => 
         array (
             0 => __DIR__ . '/..' . '/zircote/swagger-php/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Doctrine\\Deprecations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/deprecations/src',
+        ),
+        'Doctrine\\Common\\Lexer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/lexer/src',
+        ),
+        'Doctrine\\Common\\Annotations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
         ),
     );
 
@@ -64,9 +91,9 @@ class ComposerStaticInit1c78e5617b1d7fdbb3c20ca9dfe097a5
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1c78e5617b1d7fdbb3c20ca9dfe097a5::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1c78e5617b1d7fdbb3c20ca9dfe097a5::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit1c78e5617b1d7fdbb3c20ca9dfe097a5::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit8d070178755c320c69f93ee4800660ef::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit8d070178755c320c69f93ee4800660ef::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit8d070178755c320c69f93ee4800660ef::$classMap;
 
         }, null, ClassLoader::class);
     }
