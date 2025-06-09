@@ -1,34 +1,24 @@
-
 <?php
-
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-
 class Config {
-    public static function DB_HOST() {
-        return "localhost";
-    }
-
-    public static function DB_PORT() {
-        return 3306;
-    }
-
-    public static function DB_NAME() {
-        return "webdev2025";
-    }
-
-    public static function DB_USER() {
-        return "root";
-    }
-
-    public static function DB_PASSWORD() {
-        return "root";
-    }
-
-    
-    public static function JWT_SECRET() {
-        return '2c9d82b1f2a940fc9fe0f8dc86a8c5ad5fda5ff7e92aee9a74c02de7f8fbd1d9';
-    }
+   public static function DB_NAME() {
+       return Config::get_env("DB_NAME", "university");
+   }
+   public static function DB_PORT() {
+       return Config::get_env("DB_PORT", 3306);
+   }
+   public static function DB_USER() {
+       return Config::get_env("DB_USER", 'root');
+   }
+   public static function DB_PASSWORD() {
+       return Config::get_env("DB_PASSWORD", '');
+   }
+   public static function DB_HOST() {
+       return Config::get_env("DB_HOST", '127.0.0.1');
+   }
+   public static function JWT_SECRET() {
+       return Config::get_env("JWT_SECRET", ',dpPL,Se%fM-UVQBwf/X0T&B!DF6%}');
+   }
+   public static function get_env($name, $default){
+       return isset($_ENV[$name]) && trim($_ENV[$name]) != "" ? $_ENV[$name] : $default;
+   }
 }
